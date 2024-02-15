@@ -1,5 +1,20 @@
 # system-stress-test
 
+## How works
+
+The software make tests stress in url's. It's need to pass params for comand in CLI: --url, --requests, --concurrency
+Will be generated in log a summary of tests in prompt.
+
+## How to test
+
+- First run command: `go build -o main .`
+
+- Second run command: `docker build -t main .`
+
+- Third run command: `docker run main --url=http://google.com --requests=1000 --concurrency=10`
+
+<!--
+
 ### Objetivo:
 
 Criar um sistema CLI em Go para realizar testes de carga em um serviço web. O usuário deverá fornecer a URL do serviço, o número total de requests e a quantidade de chamadas simultâneas.
@@ -29,4 +44,4 @@ Distribuição de outros códigos de status HTTP (como 404, 500, etc.).
 #### - Execução da aplicação:
 
 Poderemos utilizar essa aplicação fazendo uma chamada via docker. Ex:
-docker run <sua imagem docker> —url=http://google.com —requests=1000 —concurrency=10
+docker run <sua imagem docker> —url=http://google.com —requests=1000 —concurrency=10 -->
