@@ -14,22 +14,18 @@ func main() {
 	concurrency := flag.Int("concurrency", 1, "Número de chamadas simultâneas.")
 	flag.Parse()
 
-	// Validando parâmetros
 	if *url == "" || *requests <= 0 || *concurrency <= 0 {
 		fmt.Println("Por favor, forneça valores válidos para URL, requests e concurrency.")
 		return
 	}
 
-	// Inicializando variáveis
 	var wg sync.WaitGroup
 	requestCounter := 0
 	successfulRequests := 0
 	statusCodes := make(map[int]int)
 
-	// Iniciando o cronômetro
 	startTime := time.Now()
 
-	// Função para realizar uma request
 	doRequest := func() {
 		defer wg.Done()
 
@@ -40,31 +36,30 @@ func main() {
 		}
 		defer response.Body.Close()
 
-		// Contabilizando o status code
 		statusCodes[response.StatusCode]++
 
-		// Contabilizando a request bem-sucedida
 		if response.StatusCode == http.StatusOK {
 			successfulRequests++
 		}
 
-		// Incrementando o contador total de requests
 		requestCounter++
 	}
 
-	// Iniciando as chamadas concorrentes
-	for i := 0; i < *concurrency; i++ {
+	bucket := make(chan struct{}, *concurrency)
+
+	for i := 0; i < *requests; i++ {
 		wg.Add(1)
-		go doRequest()
+		go func() {
+			bucket <- struct{}{}
+			doRequest()
+			<-bucket
+		}()
 	}
 
-	// Aguardando a conclusão de todas as chamadas
 	wg.Wait()
 
-	// Calculando o tempo total gasto na execução
 	elapsedTime := time.Since(startTime)
 
-	// Exibindo o relatório
 	fmt.Printf("Relatório de Teste:\n")
 	fmt.Printf("Tempo total gasto: %v\n", elapsedTime)
 	fmt.Printf("Quantidade total de requests: %d\n", requestCounter)
