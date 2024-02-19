@@ -23,6 +23,7 @@ func main() {
 	requestCounter := 0
 	successfulRequests := 0
 	statusCodes := make(map[int]int)
+	errorChannel := make(chan error, *requests)
 
 	startTime := time.Now()
 
@@ -31,7 +32,7 @@ func main() {
 
 		response, err := http.Get(*url)
 		if err != nil {
-			fmt.Println("Erro ao realizar a request:", err)
+			errorChannel <- err
 			return
 		}
 		defer response.Body.Close()
@@ -56,7 +57,14 @@ func main() {
 		}()
 	}
 
-	wg.Wait()
+	go func() {
+		wg.Wait()
+		close(errorChannel)
+	}()
+
+	for err := range errorChannel {
+		fmt.Println(err)
+	}
 
 	elapsedTime := time.Since(startTime)
 
