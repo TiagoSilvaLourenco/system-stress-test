@@ -7,11 +7,13 @@ Will be generated in log a summary of tests in prompt.
 
 ## How to test
 
-- First run command: `go build -o main .`
+- Run the command: `go run main.go --url=https://br.pinterest.com/ --requests=50 --concurrency=10`
+
+<!-- - First run command: `go build -o main .`
 
 - Second run command: `docker build -t main .`
 
-- Third run command: `docker run main --url=http://google.com --requests=1000 --concurrency=10`
+- Third run command: `docker run main --url=http://google.com --requests=1000 --concurrency=10` -->
 
 <!--
 
